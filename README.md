@@ -1,7 +1,7 @@
 # Kochi :billed_cap:
 
 ## Overview
-Kochi (코치) is a Korean term derived from the English word "coach." This application serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
+**Kochi (코치)** is a Korean term derived from the English word "coach." This application serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
 
 ## App - Features
 - **Custom Training Plan Generation:** Input your current long run, race date, and preferred running days to get a tailored training plan.
@@ -66,30 +66,33 @@ To run this app locally, follow these steps:
 | **Build**   | 3–4 wks   | 4–6 wks   | 4–6 wks           | 4–8 wks      |
 | **Taper**   | 1–2 wks   | 1–2 wks   | 2 wks             | 2–3 wks      |
 
-__Phases__
-- **Base** Easy runs, strides, long runs, and cross-training
-- **Build*:** Introduce tempo, intervals, and race-pace long runs
-- **Taper:** ocus on sharpening workouts while reducing volume
+**Phases**
 
-__Variants__
-### Easy Run Variants
+- **Base:** Easy runs, strides, long runs, and cross-training.
+- **Build:** Introduce tempo, intervals, and race-pace long runs.
+- **Taper:** Focus on sharpening workouts while reducing volume.
+
+### Variants
+
+#### Easy Run Variants
 - **Easy run:** A comfortable, conversational pace run.
 - **Hill run:** A run that includes hills to build strength and endurance.
 - **Steady state run:** A run at a consistent pace, usually faster than an easy run but not as intense as speedwork.
 - **Recovery jog:** A very slow and easy run to help with recovery.
 
-### Speedwork Variants
+#### Speedwork Variants
 - **Intervals (1 mile x 4):** Repeated runs of 1 mile with short recovery periods in between.
 - **Tempo run:** A run at a comfortably hard pace, usually sustained for 20-40 minutes.
 - **Fartlek:** A run that includes varied paces, from easy to sprinting, in no set order.
 - **Hill repeats:** Repeated runs up a hill with jog-down recoveries.
 - **Pyramid intervals:** Intervals that increase and then decrease in distance and/or intensity.
 
-### Cross-Training Variants
+#### Cross-Training Variants
 - **Cross-training (cycling):** A low-impact aerobic workout on a bike.
 - **Cross-training (climbing):** A full-body workout, usually at a climbing gym or wall.
 - **Strength training:** Exercises that build muscle strength using weights or body weight.
 - **Core workout:** Exercises that strengthen the core muscles (abs, back).
+
 ---
 
-Happy running and good luck with your training!
+Happy running and good luck with your training! 🏃‍♂️🏃‍♀️
