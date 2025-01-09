@@ -36,7 +36,6 @@ workout_variants = {
     "Yoga or flexibility training",
     "Rowing",
     "Elliptical",
-    "Aqua jogging",
     "Pilates"
   ]
 }
@@ -210,12 +209,39 @@ cross_training_variants = {
         ],
         "Intensity": "Varies depending on climbing difficulty and pace."
     },
-    "Strength Training": {
-        "Description": "Resistance exercises targeting major muscle groups to improve overall strength.",
+    "Cross-Training (Swimming)": {
+        "Description": "Full-body, low-impact exercise performed in a pool or open water.",
         "Purpose": [
-            "Increases muscular strength and power",
-            "Reduces injury risk by improving joint stability",
-            "Enhances running performance by strengthening key muscles"
+            "Improves cardiovascular endurance",
+            "Builds strength and flexibility with minimal joint impact",
+            "Enhances overall muscle coordination"
+        ],
+        "Intensity": "Varies based on stroke and effort, typically moderate to high."
+    },
+    "Strength Training (Upper Body)": {
+        "Description": "Exercises targeting the upper body muscles using resistance like weights or bodyweight.",
+        "Purpose": [
+            "Increases upper body strength",
+            "Improves posture and shoulder stability",
+            "Supports muscle balance and injury prevention"
+        ],
+        "Intensity": "Moderate to heavy resistance, 8-12 reps per set."
+    },
+    "Strength Training (Lower Body)": {
+        "Description": "Exercises targeting lower body muscles such as quads, hamstrings, glutes, and calves.",
+        "Purpose": [
+            "Increases lower body strength and power",
+            "Improves running performance",
+            "Supports joint stability and injury prevention"
+        ],
+        "Intensity": "Moderate to heavy resistance, 8-12 reps per set."
+    },
+    "Strength Training (Full Body)": {
+        "Description": "Exercises targeting all major muscle groups in the body, typically through compound movements.",
+        "Purpose": [
+            "Improves overall body strength and muscle endurance",
+            "Enhances functional fitness for daily activities",
+            "Reduces risk of muscle imbalances and injuries"
         ],
         "Intensity": "Moderate to heavy resistance, 8-12 reps per set."
     },
@@ -227,5 +253,41 @@ cross_training_variants = {
             "Enhances overall athletic performance"
         ],
         "Intensity": "Bodyweight or light resistance, high repetition."
+    },
+    "Yoga or Flexibility Training": {
+        "Description": "Exercises focused on improving flexibility, mobility, and balance through dynamic or static stretches.",
+        "Purpose": [
+            "Increases flexibility and joint range of motion",
+            "Improves balance and posture",
+            "Promotes recovery and relaxation"
+        ],
+        "Intensity": "Low to moderate, depending on session type."
+    },
+    "Rowing": {
+        "Description": "A full-body workout using a rowing machine or rowing on water that engages both upper and lower body muscles.",
+        "Purpose": [
+            "Improves cardiovascular endurance",
+            "Strengthens upper body, core, and legs",
+            "Provides a low-impact, total-body workout"
+        ],
+        "Intensity": "Moderate to high intensity, depending on stroke rate and resistance."
+    },
+    "Elliptical": {
+        "Description": "A low-impact cardio exercise performed on an elliptical machine that simulates walking, running, or climbing.",
+        "Purpose": [
+            "Improves cardiovascular fitness with minimal joint stress",
+            "Strengthens leg muscles",
+            "Provides a total-body workout with moving handlebars"
+        ],
+        "Intensity": "Moderate effort, can be adjusted based on resistance and speed."
+    },
+    "Pilates": {
+        "Description": "A low-impact exercise method focusing on core strength, posture, flexibility, and overall body alignment.",
+        "Purpose": [
+            "Strengthens the core and improves body control",
+            "Enhances flexibility and joint mobility",
+            "Promotes injury prevention and rehabilitation"
+        ],
+        "Intensity": "Moderate, often bodyweight-based exercises with emphasis on form and control."
     }
 }
