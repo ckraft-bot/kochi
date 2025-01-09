@@ -66,7 +66,7 @@ To run this app locally, follow these steps:
 | **Build**   | 3–4 wks   | 4–6 wks   | 4–6 wks           | 4–8 wks      |
 | **Taper**   | 1–2 wks   | 1–2 wks   | 2 wks             | 2–3 wks      |
 
-**Phases**
+### Phases
 
 - **Base:** Easy runs, strides, long runs, and cross-training.
 - **Build:** Introduce tempo, intervals, and race-pace long runs.
