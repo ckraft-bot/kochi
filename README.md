@@ -49,7 +49,6 @@ To run this app locally, follow these steps:
 
 ## About Running
 
-st.markdown("""
 ### Race Distances  
 
 | **Race**           | **Distance (km)** | **Distance (miles)** |
@@ -58,9 +57,7 @@ st.markdown("""
 | **10K**            | 10 km             | 6.2 miles            |
 | **Half Marathon**  | 21.1 km           | 13.1 miles           |
 | **Marathon**       | 42.2 km           | 26.2 miles           |
-""")
 
-st.markdown("""
 ### Recommended Training Periods 
 
 | **Phase**   | **5K**    | **10K**   | **Half Marathon** | **Marathon** |
@@ -68,7 +65,6 @@ st.markdown("""
 | **Base**    | 4–6 wks   | 6–8 wks   | 8–10 wks          | 10–12 wks    |
 | **Build**   | 3–4 wks   | 4–6 wks   | 4–6 wks           | 4–8 wks      |
 | **Taper**   | 1–2 wks   | 1–2 wks   | 2 wks             | 2–3 wks      |
-""")
 
 __Phases__
 - **Base** Easy runs, strides, long runs, and cross-training
