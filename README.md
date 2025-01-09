@@ -3,13 +3,13 @@
 ## Overview
 **Kochi (코치)** is a Korean term derived from the English word "coach." This application serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
 
-## App - Features
+### App - Features
 - **Custom Training Plan Generation:** Input your current long run, race date, and preferred running days to get a tailored training plan.
 - **Running Day Variants:** Choose from different combinations of running days (Monday-Wednesday-Friday, Tuesday-Thursday-Sunday, or Wednesday-Friday-Saturday).
 - **Countdown to Race Day:** See how many days are left until your race along with a motivational progress bar.
 - **App Instructions & Variants:** Detailed explanation of how to use the app and descriptions of different types of runs and cross-training workouts.
 
-## App - How To Use
+### App - How To Use
 1. **Go to the "Coach" page.**
 2. **Select your race goal:** Choose the race distance you are training for (5K, 10K, Half Marathon, or Marathon).
 3. **Input your current long run:** Enter the longest distance you have run recently.
@@ -18,7 +18,7 @@
 6. **Generate plan:** Click the "Generate Plan" button to create your custom training plan.
 7. **Countdown:** Go to the "Countdown" page to see how many days are left until your race.
 
-## App - Setup
+### App - Setup
 To run this app locally, follow these steps:
 
 1. **Clone the repository:**
@@ -41,7 +41,7 @@ To run this app locally, follow these steps:
     streamlit run app.py
     ```
 
-## Code Structure
+### Code Structure
 - **Training Plan Generator Functions:** Functions to generate a training plan based on user inputs.
 - **User Input Form:** Collects user inputs such as race goal, current long run, race date, and preferred running days.
 - **About Page:** Provides an overview of the app, instructions on how to use it, and descriptions of workout variants.
