@@ -1,7 +1,7 @@
 # Kochi :billed_cap:
 
 ## Overview
-Kochi (코치) is a Korean term derived from the English word "coach." This [application]([https://fb4xamksbqjb6gxdzgwqib.streamlit.app/](https://kochi-training-plan.streamlit.app/)) serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
+Kochi (코치) is a Korean term derived from the English word "coach." This [application]([https://fb4xamksbqjb6gxdzgwqib.streamlit.app/](https://kochi-training-plan.streamlit.app/) serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
 
 
 ### App - Features
