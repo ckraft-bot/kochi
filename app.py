@@ -186,7 +186,7 @@ elif page == "About":
 
     st.title("Understand Running")
 
-    st.header("Distances")
+    st.header("Race Distances")
     st.markdown("""
     | **Race**           | **Distance (km)** | **Distance (miles)** |
     |--------------------|-------------------|----------------------|
@@ -205,33 +205,38 @@ elif page == "About":
     | **Taper**   | 1–2 wks   | 1–2 wks   | 2 wks             | 2–3 wks      |
     """)
 
-    st.header("Training Phases")
-    st.write("""
-    - **Base** Easy runs, strides, long runs, and cross-training
-    - **Build*:** Introduce tempo, intervals, and race-pace long runs
-    - **Taper:** ocus on sharpening workouts while reducing volume
+    st.header("Phases")
+    st.markdown("""
+    - **Base:** Easy runs, strides, long runs, and cross-training.
+    - **Build:** Introduce tempo, intervals, and race-pace long runs.
+    - **Taper:** Focus on sharpening workouts while reducing volume.
     """)
 
-    st.header("Workout Variants")
-    st.write("""
-    ### Easy Runs
-    - **Easy run:** a comfortable, conversational pace run.
-    - **Hill run:** a run that includes hills to build strength and endurance.
-    - **Steady state run:** a run at a consistent pace, usually faster than an easy run but not as intense as speedwork.
-    - **Recovery jog:** a very slow and easy run to help with recovery.
-    
-    ### Speedwork
-    - **Intervals (1 mile x 4):** repeated runs of 1 mile with short recovery periods in between.
-    - **Tempo run:** a run at a comfortably hard pace, usually sustained for 20-40 minutes.
-    - **Fartlek:** a run that includes varied paces, from easy to sprinting, in no set order.
-    - **Hill repeats:** repeated runs up a hill with jog-down recoveries.
-    - **Pyramid intervals:** intervals that increase and then decrease in distance and/or intensity.
+    st.header("Variants")
+    st.subheader("Easy Run Variants")
+    st.markdown("""
+    - **Easy run:** A comfortable, conversational pace run.
+    - **Hill run:** A run that includes hills to build strength and endurance.
+    - **Steady state run:** A run at a consistent pace, usually faster than an easy run but not as intense as speedwork.
+    - **Recovery jog:** A very slow and easy run to help with recovery.
+    """)
 
-    ### Cross-Training
-    - **Cross-training (cycling):** a low-impact aerobic workout on a bike.
-    - **Cross-training (climbing):** a full-body workout, usually at a climbing gym or wall.
-    - **Strength training:** exercises that build muscle strength using weights or body weight.
-    - **Core workout:** exercises that strengthen the core muscles (abs, back).
+    st.subheader("Speedwork Variants")
+    st.markdown("""
+    - **Intervals (1 mile x 4):** Repeated runs of 1 mile with short recovery periods in between.
+    - **Tempo run:** A run at a comfortably hard pace, usually sustained for 20-40 minutes.
+    - **Fartlek:** A run that includes varied paces, from easy to sprinting, in no set order.
+    - **Hill repeats:** Repeated runs up a hill with jog-down recoveries.
+    - **Pyramid intervals:** Intervals that increase and then decrease in distance and/or intensity.
+    """)
+
+    # Cross-Training
+    st.subheader("Cross-Training Variants")
+    st.markdown("""
+    - **Cross-training (cycling):** A low-impact aerobic workout on a bike.
+    - **Cross-training (climbing):** A full-body workout, usually at a climbing gym or wall.
+    - **Strength training:** Exercises that build muscle strength using weights or body weight.
+    - **Core workout:** Exercises that strengthen the core muscles (abs, back).
     """)
 elif page == "Countdown":
     st.title("Countdown to Race Day")
