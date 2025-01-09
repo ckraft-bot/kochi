@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, timedelta, date
 import random
 
 st.sidebar.title("Navigation")
@@ -208,30 +208,50 @@ elif page == "About":
     """)
 elif page == "Countdown":
     st.title("Countdown to Race Day")
-    
+
     # User inputs the race date
     race_date = st.date_input("When is the race again?")
-    
+
     # Calculate the number of days until the race
     today = datetime.now().date()
     days_until_race = (race_date - today).days
-    
+    total_days = 16 * 7  # Total days in 16 weeks
+
     if days_until_race > 0:
         st.subheader(f"{days_until_race} days until your race!")
+
+        # Calculate progress based on the benchmark periods (estimated)
+        # the week of the race will be 100%
+        if days_until_race <= 7:
+            progress = 1.0
+        # ~ a week out from the race
+        elif days_until_race <= 11:
+            progress = 0.9
+        # ~ a mounth out from the race
+        elif days_until_race <= 28:
+            progress = 0.75
+        # ~ two months out from the race
+        elif days_until_race <= 56:
+            progress = 0.5
+        # ~ three months out from the race 
+        elif days_until_race <= 84:
+            progress = 0.25
+        else:
+            progress = 0.0
+
+        st.progress(progress)
+
+        # Show progress messages
+        if progress == 1.0:
+            st.markdown("🎉 You're ready for the race! 🎉")
+        elif progress >= 0.75:
+            st.markdown("🏃‍♂️ Almost there! 🏃‍♀️")
+        elif progress >= 0.5:
+            st.markdown("💪 Keep pushing! 💪")
+        else:
+            st.markdown("👟 Let's get moving! 👟")
+
+    elif days_until_race < 0:
+        st.subheader(f"The race has past, how did you do?")
     else:
         st.subheader("Race day is here! Good luck and have fun!")
-        
-    # Assuming weeks_to_race is already calculated from race_date
-    weeks_to_race = max(1, (race_date - today).days // 7)
-    progress = min(1.0, weeks_to_race / (weeks_to_race + 1))
-    st.progress(progress)
-
-    # Show progress messages
-    if progress == 1.0:
-        st.markdown("🎉 You're ready for the race! 🎉")
-    elif progress > 0.75:
-        st.markdown("🏃‍♂️ Almost there! 🏃‍♀️")
-    elif progress > 0.5:
-        st.markdown("💪 Keep pushing! 💪")
-    else:
-        st.markdown("👟 Let's get moving! 👟")
