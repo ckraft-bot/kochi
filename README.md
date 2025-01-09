@@ -1,7 +1,7 @@
 # Custom Race Training Plan Generator
 
 ## Overview
-Kochi (코치) is a Korean word, borrwoed from English, for "coach". This app is your virtual coach. This app is designed to help runners create a custom training plan for their races. Whether you’re training for a 5K, 10K, Half Marathon, or Marathon, the app will generate a detailed plan including easy runs, speed workouts, long runs, cross-training, and rest days based on your current fitness level and the time remaining until your race.
+Kochi (코치) is a Korean term derived from the English word "coach." This application serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
 
 ## Features
 - **Custom Training Plan Generation:** Input your current long run, race date, and preferred running days to get a tailored training plan.
