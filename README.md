@@ -66,13 +66,6 @@ To run this app locally, follow these steps:
 - **Cross-training (climbing):** A full-body workout, usually at a climbing gym or wall.
 - **Strength training:** Exercises that build muscle strength using weights or body weight.
 - **Core workout:** Exercises that strengthen the core muscles (abs, back).
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
-## Contact
-For any questions, suggestions, or feedback, please feel free to reach out to us.
-
 ---
 
 Happy running and good luck with your training!
