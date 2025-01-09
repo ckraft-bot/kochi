@@ -1,14 +1,18 @@
 import streamlit as st
 from datetime import datetime, timedelta, date
 import random
+import dictionary
+from dictionary import *
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Coach", "About", "Countdown"])
 if page == "Coach":
     # ------------------------ Training Plan Generator Functions ------------------------
-    easy_run_variants = ["Easy run", "Hill run", "Steady state run", "Recovery jog"]
-    speedwork_variants = ["Intervals (1 mile x 4)", "Tempo run", "Fartlek", "Hill repeats", "Pyramid intervals"]
-    cross_training_variants = ["Cross-training (cycling)", "Cross-training (climbing)", "Strength training", "Core workout"]
+    categories = {
+        "Easy Run Variants": easy_run_variants,
+        "Speedwork Variants": speedwork_variants,
+        "Cross-Training Variants": cross_training_variants
+    }
 
     def generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days):
         """
@@ -69,10 +73,11 @@ if page == "Coach":
         Assigns workouts to the selected days based on the preferred days.
         """
         
-        light = f"{random.choice(easy_run_variants)} (2-{long_run_distance / 2:.1f} miles)"
-        moderate = f"{random.choice(speedwork_variants)} ({long_run_distance / 3:.1f} miles)"
+        # Randomly pick workout types from the keys of each variant dictionary
+        light = f"{random.choice(list(easy_run_variants.keys()))} (2-{long_run_distance / 2:.1f} miles)"
+        moderate = f"{random.choice(list(speedwork_variants.keys()))} ({long_run_distance / 3:.1f} miles)"
         hard = f"Long run ({long_run_distance:.1f} miles)"
-        cross_train = f"{random.choice(cross_training_variants)}"
+        cross_train = f"{random.choice(list(cross_training_variants.keys()))}"
         rest = "Rest or walk"
 
         # Define plans for common combinations
@@ -114,7 +119,6 @@ if page == "Coach":
         
         return weekly_plan
 
-
     # ------------------------ User Input Form ------------------------
 
     # Title and description of the app
@@ -136,14 +140,6 @@ if page == "Coach":
         ["Monday-Wednesday-Friday", "Tuesday-Thursday-Sunday", "Wednesday-Friday-Saturday"]
     )
 
-    # Race distance dictionary
-    race_distances = {
-        "5K": 3.1,
-        "10K": 6.2,
-        "Half Marathon": 13.1,
-        "Marathon": 26.2
-    }
-
     # Generate the training plan when the button is pressed
     if st.button("Generate Plan"):
         weeks_to_race = (race_date - datetime.now().date()).days // 7
@@ -158,12 +154,17 @@ if page == "Coach":
             # Display the generated plan
             st.success("Training plan generated!")
 
-            # Display the weekly plan
+            # Display the weekly plan with days in a fixed order
             for week in plan:
                 st.subheader(f"Week {week['Week']}")
-                for day, activity in week.items():
-                    if day != "Week":
-                        st.text(f"{day}: {activity}")
+
+                # Define the correct order of days
+                days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+                # Loop through days in the desired order and display the activities
+                for day in days_of_week:
+                    if day in week:
+                        st.text(f"{day}: {week[day]}")
 elif page == "About":
     st.title("Understand the App")
 
