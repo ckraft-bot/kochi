@@ -3,13 +3,13 @@
 ## Overview
 Kochi (코치) is a Korean term derived from the English word "coach." This application serves as your virtual coach, designed to assist runners, such as yourself, in formulating a personalized training regimen for their races. Regardless of whether you are preparing for a 5K, 10K, half marathon, or marathon, the application will produce a comprehensive plan tailored to your current fitness level and the time remaining before your race. The plan encompasses easy runs, speed workouts, long runs, cross-training sessions, and designated rest days.
 
-## Features
+## App - Features
 - **Custom Training Plan Generation:** Input your current long run, race date, and preferred running days to get a tailored training plan.
 - **Running Day Variants:** Choose from different combinations of running days (Monday-Wednesday-Friday, Tuesday-Thursday-Sunday, or Wednesday-Friday-Saturday).
 - **Countdown to Race Day:** See how many days are left until your race along with a motivational progress bar.
 - **App Instructions & Variants:** Detailed explanation of how to use the app and descriptions of different types of runs and cross-training workouts.
 
-## How to Use the App
+## App - How To Use
 1. **Go to the "Coach" page.**
 2. **Select your race goal:** Choose the race distance you are training for (5K, 10K, Half Marathon, or Marathon).
 3. **Input your current long run:** Enter the longest distance you have run recently.
@@ -18,7 +18,7 @@ Kochi (코치) is a Korean term derived from the English word "coach." This appl
 6. **Generate plan:** Click the "Generate Plan" button to create your custom training plan.
 7. **Countdown:** Go to the "Countdown" page to see how many days are left until your race.
 
-## Setup
+## App - Setup
 To run this app locally, follow these steps:
 
 1. **Clone the repository:**
@@ -47,7 +47,35 @@ To run this app locally, follow these steps:
 - **About Page:** Provides an overview of the app, instructions on how to use it, and descriptions of workout variants.
 - **Countdown Page:** Displays the number of days until the race with a progress bar and motivational messages.
 
-## Variants
+## About Running
+
+st.markdown("""
+### Race Distances  
+
+| **Race**           | **Distance (km)** | **Distance (miles)** |
+|--------------------|-------------------|----------------------|
+| **5K**             | 5 km              | 3.1 miles            |
+| **10K**            | 10 km             | 6.2 miles            |
+| **Half Marathon**  | 21.1 km           | 13.1 miles           |
+| **Marathon**       | 42.2 km           | 26.2 miles           |
+""")
+
+st.markdown("""
+### Recommended Training Periods 
+
+| **Phase**   | **5K**    | **10K**   | **Half Marathon** | **Marathon** |
+|-------------|-----------|-----------|-------------------|--------------|
+| **Base**    | 4–6 wks   | 6–8 wks   | 8–10 wks          | 10–12 wks    |
+| **Build**   | 3–4 wks   | 4–6 wks   | 4–6 wks           | 4–8 wks      |
+| **Taper**   | 1–2 wks   | 1–2 wks   | 2 wks             | 2–3 wks      |
+""")
+
+__Phases__
+- **Base** Easy runs, strides, long runs, and cross-training
+- **Build*:** Introduce tempo, intervals, and race-pace long runs
+- **Taper:** ocus on sharpening workouts while reducing volume
+
+__Variants__
 ### Easy Run Variants
 - **Easy run:** A comfortable, conversational pace run.
 - **Hill run:** A run that includes hills to build strength and endurance.

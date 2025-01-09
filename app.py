@@ -165,15 +165,15 @@ if page == "Coach":
                     if day != "Week":
                         st.text(f"{day}: {activity}")
 elif page == "About":
-    st.title("How to use the app")
+    st.title("Understand the App")
 
-    st.header("App Overview")
+    st.header("Overview")
     st.write("""
     This app customizes a training plan for your race preparation. 
     The app generates a detailed training plan that includes a mix of easy runs, speed workouts, long runs, cross-training, and rest days based on your current fitness level and the time remaining until your race.
     """)
 
-    st.header("App Instructions")
+    st.header("Instructions")
     st.write("""
     1. Go to the "Coach" page.
     2. **Select your race goal**: choose the race distance you are training for (5K, 10K, Half Marathon, or Marathon).
@@ -184,23 +184,50 @@ elif page == "About":
     7. **Countdown**: go to the "Countdown" page to see how many days are left
     """)
 
+    st.title("Understand Running")
+
+    st.header("Distances")
+    st.markdown("""
+    | **Race**           | **Distance (km)** | **Distance (miles)** |
+    |--------------------|-------------------|----------------------|
+    | **5K**             | 5 km              | 3.1 miles            |
+    | **10K**            | 10 km             | 6.2 miles            |
+    | **Half Marathon**  | 21.1 km           | 13.1 miles           |
+    | **Marathon**       | 42.2 km           | 26.2 miles           |
+    """)
+
+    st.header("Recommended Training Periods")
+    st.markdown("""
+    | **Phase**   | **5K**    | **10K**   | **Half Marathon** | **Marathon** |
+    |-------------|-----------|-----------|-------------------|--------------|
+    | **Base**    | 4–6 wks   | 6–8 wks   | 8–10 wks          | 10–12 wks    |
+    | **Build**   | 3–4 wks   | 4–6 wks   | 4–6 wks           | 4–8 wks      |
+    | **Taper**   | 1–2 wks   | 1–2 wks   | 2 wks             | 2–3 wks      |
+    """)
+
+    st.header("Training Phases")
+    st.write("""
+    - **Base** Easy runs, strides, long runs, and cross-training
+    - **Build*:** Introduce tempo, intervals, and race-pace long runs
+    - **Taper:** ocus on sharpening workouts while reducing volume
+    """)
 
     st.header("Workout Variants")
     st.write("""
-    ### Easy Run Variants
+    ### Easy Runs
     - **Easy run:** a comfortable, conversational pace run.
     - **Hill run:** a run that includes hills to build strength and endurance.
     - **Steady state run:** a run at a consistent pace, usually faster than an easy run but not as intense as speedwork.
     - **Recovery jog:** a very slow and easy run to help with recovery.
     
-    ### Speedwork Variants
+    ### Speedwork
     - **Intervals (1 mile x 4):** repeated runs of 1 mile with short recovery periods in between.
     - **Tempo run:** a run at a comfortably hard pace, usually sustained for 20-40 minutes.
     - **Fartlek:** a run that includes varied paces, from easy to sprinting, in no set order.
     - **Hill repeats:** repeated runs up a hill with jog-down recoveries.
     - **Pyramid intervals:** intervals that increase and then decrease in distance and/or intensity.
 
-    ### Cross-Training Variants
+    ### Cross-Training
     - **Cross-training (cycling):** a low-impact aerobic workout on a bike.
     - **Cross-training (climbing):** a full-body workout, usually at a climbing gym or wall.
     - **Strength training:** exercises that build muscle strength using weights or body weight.
