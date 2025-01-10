@@ -14,59 +14,121 @@ if page == "Coach":
         "Cross-Training Variants": cross_training_variants
     }
 
-    def generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days):
+    def generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days, goal):
         """
         Generates a training plan for a specific race based on current long run distance and weeks to race.
         """
-
+        
         plan = []
         long_run_distance = current_long_run
         
-        # Define weekly increase based on race timeline
-        weekly_increase = calculate_weekly_increase(weeks_to_race)
+        # Set build_peak_distance as goal distance minus 1 mile
+        build_peak_distance = race_distances[goal] - 1
         
-        # Cap the long run distance during build phase
-        build_peak_distance = 12
-
         for week in range(1, weeks_to_race + 1):
-            long_run_distance = adjust_long_run_distance(week, long_run_distance, weekly_increase, build_peak_distance, current_long_run, weeks_to_race)
+            weekly_increase = calculate_weekly_increase(goal, weeks_to_race, week)
+            long_run_distance = adjust_long_run_distance(week, long_run_distance, weekly_increase, build_peak_distance, current_long_run, weeks_to_race, goal)
             
             weekly_plan = {"Week": week}
             
             # Create the weekly workout plan based on the preferred days
             weekly_plan = assign_workouts_to_days(weekly_plan, long_run_distance, easy_run_variants, speedwork_variants, cross_training_variants, preferred_days)
             
-            # Add to the final plan
             plan.append(weekly_plan)
-
+        
         return plan
 
+    def calculate_weekly_increase(goal, weeks_to_race, current_week):
+        """
+        Calculates the weekly increase in distance based on race distance and the current week of training.
+        
+        Parameters:
+        - goal (str): One of '5K', '10K', 'Half Marathon', or 'Marathon'.
+        - weeks_to_race (int): The total number of weeks remaining until the race.
+        - current_week (int): The current week of training (starting from 1).
 
-    def calculate_weekly_increase(weeks_to_race):
+        Returns:
+        - float: The recommended weekly increase in distance.
         """
-        Calculates the weekly increase in distance based on the number of weeks to race.
-        """
-        if weeks_to_race <= 7:
-            return 1.0  # Larger increase for short training periods
-        elif weeks_to_race <= 10:
-            return 0.75  # Moderate increase for medium training periods
+        
+        # Define phase durations based on the race goal
+        phase_durations = {
+            '5K': {"Base": (4, 6), "Build": (3, 4), "Taper": (1, 2)},
+            '10K': {"Base": (6, 8), "Build": (4, 6), "Taper": (1, 2)},
+            'Half Marathon': {"Base": (8, 10), "Build": (4, 6), "Taper": (2, 2)},
+            'Marathon': {"Base": (10, 12), "Build": (4, 8), "Taper": (2, 3)}
+        }
+        
+        # Get the duration ranges for the selected goal
+        base_range, build_range, taper_range = phase_durations[goal].values()
+        
+        # Calculate the number of weeks allocated for each phase
+        total_phase_weeks = sum(base_range) + sum(build_range) + sum(taper_range)
+        scaling_factor = weeks_to_race / total_phase_weeks
+        
+        base_weeks = int(sum(base_range) * scaling_factor)
+        build_weeks = int(sum(build_range) * scaling_factor)
+        taper_weeks = weeks_to_race - base_weeks - build_weeks
+        
+        # Determine which phase the current week falls into
+        if current_week <= base_weeks:
+            weekly_increase = 0.5  # Base phase increase
+        elif current_week <= base_weeks + build_weeks:
+            weekly_increase = 0.8  # Build phase increase
         else:
-            return 0.5  # Smaller increase for longer training periods
+            weekly_increase = 0.3  # Taper phase reduction
+        
+        return weekly_increase
 
+    def adjust_long_run_distance(week, long_run_distance, weekly_increase, build_peak_distance, current_long_run, weeks_to_race, goal):
+        """
+        Adjusts the long run distance based on the week of training (Base, Build, Taper) and the race goal.
+        
+        Parameters:
+        - week (int): Current week of training.
+        - long_run_distance (float): Current long run distance.
+        - weekly_increase (float): Weekly increase in distance.
+        - build_peak_distance (float): Maximum peak distance during the Build phase.
+        - current_long_run (float): Initial long run distance at the start of the plan.
+        - weeks_to_race (int): Total number of weeks in the training plan.
+        - goal (str): The race goal ('5K', '10K', 'Half Marathon', 'Marathon').
 
-    def adjust_long_run_distance(week, long_run_distance, weekly_increase, build_peak_distance, current_long_run, weeks_to_race):
+        Returns:
+        - float: Adjusted long run distance for the given week.
         """
-        Adjusts the long run distance based on the week of training (Base, Build, Taper).
-        """
-        if week <= int(0.6 * weeks_to_race):  # Base phase
+        
+        # Define phase durations based on the goal
+        phase_durations = {
+            '5K': {"Base": (4, 6), "Build": (3, 4), "Taper": (1, 2)},
+            '10K': {"Base": (6, 8), "Build": (4, 6), "Taper": (1, 2)},
+            'Half Marathon': {"Base": (8, 10), "Build": (4, 6), "Taper": (2, 2)},
+            'Marathon': {"Base": (10, 12), "Build": (4, 8), "Taper": (2, 3)}
+        }
+        
+        # Get the durations for each phase for the selected goal
+        base_range, build_range, taper_range = phase_durations[goal].values()
+        
+        # Calculate the total number of weeks in each phase using scaling
+        total_phase_weeks = sum(base_range) + sum(build_range) + sum(taper_range)
+        scaling_factor = weeks_to_race / total_phase_weeks
+        
+        base_weeks = int(sum(base_range) * scaling_factor)
+        build_weeks = int(sum(build_range) * scaling_factor)
+        taper_weeks = weeks_to_race - base_weeks - build_weeks
+
+        if week <= base_weeks:
+            # Base phase: gradual increase in long run distance
             long_run_distance = min(long_run_distance + weekly_increase, build_peak_distance)
-        elif week <= int(0.8 * weeks_to_race):  # Build phase
+        
+        elif week <= base_weeks + build_weeks:
+            # Build phase: slightly faster increase, but capped at the peak distance
             long_run_distance = min(long_run_distance + weekly_increase * 1.5, build_peak_distance)
-        else:  # Taper phase
-            long_run_distance = max(long_run_distance - 1, current_long_run)
+        
+        else:
+            # Taper phase: gradual reduction in long run distance for recovery
+            long_run_distance = max(long_run_distance - weekly_increase, current_long_run)
         
         return long_run_distance
-
 
     def assign_workouts_to_days(weekly_plan, long_run_distance, easy_run_variants, speedwork_variants, cross_training_variants, preferred_days):
         """
@@ -142,28 +204,32 @@ if page == "Coach":
     # Generate the training plan when the button is pressed
     if st.button("Generate Plan"):
         weeks_to_race = (race_date - datetime.now().date()).days // 7
-        if weeks_to_race < 4:
-            st.warning("You need at least 4 weeks to prepare for a race.")
+
+        min_weeks_required = {
+            "5K": 6,
+            "10K": 8,
+            "Half Marathon": 12,
+            "Marathon": 16
+        }
+
+        if weeks_to_race < min_weeks_required[goal]:
+            st.warning(f"You need at least {min_weeks_required[goal]} weeks to prepare for a {goal}.")
         else:
             race_distance = race_distances.get(goal, 0)
 
-            # Call the function to generate the training plan
             plan = generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days)
 
-            # Display the generated plan
             st.success("Training plan generated!")
 
-            # Display the weekly plan with days in a fixed order
             for week in plan:
                 st.subheader(f"Week {week['Week']}")
 
-                # Define the correct order of days
                 days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-                # Loop through days in the desired order and display the activities
                 for day in days_of_week:
                     if day in week:
                         st.text(f"{day}: {week[day]}")
+                        
 elif page == "About":
     st.title("Understand the App")
 
