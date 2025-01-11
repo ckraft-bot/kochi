@@ -151,7 +151,7 @@ if page == "Coach":
         st.error("Please select a future race date.")
     else:
         preferred_days = st.selectbox(
-            "Select your preferred running days:",
+            "Select your preferred running days",
             ["Monday-Wednesday-Friday", "Tuesday-Thursday-Sunday", "Wednesday-Friday-Saturday"]
         )
         
@@ -364,9 +364,9 @@ elif page == "Weather":
     forecast_duration = st.slider("Select forecast duration (hours)", min_value=12, max_value=48, value=24, step=12)
     unit = st.radio("Select temperature unit", ["Celsius (°C)", "Fahrenheit (°F)"])
     parameter_options = st.multiselect(
-        "Choose weather parameters to display:",
-        options=["Temperature", "Humidity (%)", "Wind Speed (m/s)"],
-        default=["Temperature"]
+        "Choose weather parameters to display",
+        options=["Temperature", "Humidity", "Wind Speed"],
+        default=["Temperature", "Humidity"]
     )
 
     if st.button("Get local weather"):
@@ -385,9 +385,9 @@ elif page == "Weather":
                     temp_unit = "°F"
                 else:
                     temp_unit = "°C"
-                col1.metric("🌡️ Temperature", f"{temperature:.1f}{temp_unit}")
-                col2.metric("💧 Humidity", f"{data['hourly']['relative_humidity_2m'][0]}%")
-                col3.metric("💨 Wind Speed", f"{data['hourly']['wind_speed_10m'][0]} m/s")
+                col1.metric(f"🌡️ Temperature {temp_unit}", f"{temperature:.1f}{temp_unit}")
+                col2.metric("💧 Humidity (%)", f"{data['hourly']['relative_humidity_2m'][0]}%")
+                col3.metric("💨 Wind Speed (m/s)", f"{data['hourly']['wind_speed_10m'][0]} m/s")
 
                 if "Temperature" in parameter_options:
                     temperatures = data['hourly']['temperature_2m'][:forecast_duration]
@@ -397,7 +397,7 @@ elif page == "Weather":
                     st.subheader(f"Temperature Forecast")
                     st.line_chart(df.set_index("Time")[f"Temperature ({temp_unit})"])
 
-                if "Humidity (%)" in parameter_options:
-                    df["Humidity (%)"] = data['hourly']['relative_humidity_2m'][:forecast_duration]
+                if "Humidity" in parameter_options:
+                    df["Humidity"] = data['hourly']['relative_humidity_2m'][:forecast_duration]
                     st.subheader(f"Humidity Forecast")
                     st.line_chart(df.set_index("Time")["Humidity (%)"])
