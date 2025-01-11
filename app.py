@@ -198,6 +198,7 @@ elif page == "About":
     5. **Choose your preferred running days**: select the days you prefer to run from the dropdown menu.
     6. **Generate plan**: click the "Generate Plan" button to create your custom training plan.
     7. **Countdown**: go to the "Countdown" page to see how many days are left
+    8. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
     """)
 
     st.title("Understand Running")
