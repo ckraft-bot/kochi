@@ -2,12 +2,12 @@
 
 # olive green #606c38
 # mustard yellow #dda15e
-# dark forest green #283618
+# dark forest green  #283618
 
 # interactive 
-primaryColor = "#606c38"
+primaryColor = "#dda15e" 
 backgroundColor = "#283618"
-secondaryBackgroundColor = "#dda15e"
+secondaryBackgroundColor = "#606c38"
 
 # Color used for almost all text (alternatives: #F1FAEE, #e7ecef)
-textColor = "#F1FAEE"
+textColor = "#e7ecef"
