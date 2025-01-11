@@ -400,4 +400,4 @@ elif page == "Weather":
                 if "Humidity" in parameter_options:
                     df["Humidity"] = data['hourly']['relative_humidity_2m'][:forecast_duration]
                     st.subheader(f"Humidity Forecast")
-                    st.line_chart(df.set_index("Time")["Humidity (%)"])
+                    st.line_chart(df.set_index("Time")["Humidity"])
