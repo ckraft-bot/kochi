@@ -1,13 +1,17 @@
 [theme]
 
-# olive green #606c38
-# mustard yellow #dda15e
-# dark forest green  #283618
+# color palatte
+    # olive green #606c38
+    # mustard yellow #dda15e
+    # dark forest green #283618
+    # morning mist #E7ECEF
 
-# interactive 
+# the interactive elements
 primaryColor = "#dda15e" 
+# main background color
 backgroundColor = "#283618"
+# sidebar, text boxes
 secondaryBackgroundColor = "#606c38"
 
-# Color used for almost all text (alternatives: #F1FAEE, #e7ecef)
-textColor = "#e7ecef"
+# text (alternatives: #F1FAEE, #404242)
+textColor = "E7ECEF"
