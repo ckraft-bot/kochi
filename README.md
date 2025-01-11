@@ -18,6 +18,7 @@ Kochi (코치) is a Korean term derived from the English word "coach." This [app
 5. **Choose your preferred running days:** Select the days you prefer to run from the dropdown menu.
 6. **Generate plan:** Click the "Generate Plan" button to create your custom training plan.
 7. **Countdown:** Go to the "Countdown" page to see how many days are left until your race.
+8. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
 
 ### App - Setup
 To run this app locally, follow these steps:
