@@ -1,9 +1,11 @@
+import streamlit as st
 import pandas as pd
 import random
 import requests
-import streamlit as st
 from datetime import datetime, timedelta
 from dictionary import *  
+from pymeteosource.api import Meteosource
+from pymeteosource.types import tiers, sections, langs, units
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather"])
@@ -362,75 +364,45 @@ elif page == "Stretches":
             Not sure where to start? No problem, check out this [video guide](https://youtu.be/12pDBWdR3I4?si=U_OoBCgNRH3rxyK-).
         ''')
         
+
 elif page == "Weather":
-    st.title("Weather Monitor 🌦️")
-    def get_coordinates(city_name):
-        url = f"https://nominatim.openstreetmap.org/search?q={city_name}&format=json&limit=1"
-        headers = {"User-Agent": "WeatherDashboardApp/1.0 (contact@example.com)"}
-        response = requests.get(url, headers=headers)
+    st.title("Weather :partly_sunny_rain: Monitor")
+    # Set your API key and tier
+    meteosource_api_key = "5winhpzkh9hxhyo93fnp6anbcwtchsriofsdpi7w"
+    tier = tiers.FREE  
+    meteosource = Meteosource(meteosource_api_key, tier)
 
-        if response.status_code == 200:
-            location_data = response.json()
-            if location_data:
-                location = location_data[0]
-                return float(location['lat']), float(location['lon'])
-            else:
-                st.warning("City not found. Try adding the country name (e.g., 'Paris, France').")
-                return None, None
-        else:
-            st.error(f"API request failed with status code {response.status_code}: {response.text}")
-            return None, None
+    # Coordinates for the location (San Francisco example)
+    latitude = 35.045631
+    longitude = -85.309677
 
-    def get_weather_data(lat, lon, hours):
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&forecast_days=2"
-        response = requests.get(url)
-        
-        if response.status_code == 200:
-            return response.json()
-        else:
-            st.error("Failed to retrieve weather data.")
-            return None
-
-    st.write("Look at the weather to dress appropriately for your outdoor training session!")
-
-    city_name = st.text_input("Enter city name", value="New York City")
-    forecast_duration = st.slider("Select forecast duration (hours)", min_value=12, max_value=48, value=24, step=12)
-    unit = st.radio("Select temperature unit", ["Celsius (°C)", "Fahrenheit (°F)"])
-    parameter_options = st.multiselect(
-        "Choose weather parameters to display",
-        options=["Temperature", "Humidity", "Wind Speed"],
-        default=["Temperature", "Humidity"]
+    # Fetch the forecast data using Meteosource
+    forecast = meteosource.get_point_forecast(
+        lat=latitude,
+        lon=longitude,
+        sections=[sections.CURRENT, sections.HOURLY],  
+        tz='America/New_York',  
+        lang=langs.ENGLISH,  
+        units=units.US  # Units (e.g., Fahrenheit for temperature)
     )
 
-    if st.button("Get local weather"):
-        lat, lon = get_coordinates(city_name)
-        if lat and lon:
-            data = get_weather_data(lat, lon, forecast_duration)
-            if data:
-                times = [datetime.now() + timedelta(hours=i) for i in range(forecast_duration)]
-                df = pd.DataFrame({"Time": times})
+    if forecast:
+        current_temperature = forecast.current.temperature
+        current_condition = forecast.current.summary
+        current_wind_speed = forecast.current.wind.speed
+        
+        current_precipitation = forecast.current.precipitation
+        precipitation_total = current_precipitation.total  # Total precipitation (in mm)
+        precipitation_type = current_precipitation.type  # Type of precipitation (e.g., rain, snow)
 
-                st.subheader("Current Weather Summary")
-                col1, col2, col3 = st.columns(3)
-                temperature = data['hourly']['temperature_2m'][0]
-                if unit == "Fahrenheit (°F)":
-                    temperature = (temperature * 9/5) + 32
-                    temp_unit = "°F"
-                else:
-                    temp_unit = "°C"
-                col1.metric(f"🌡️ Temperature {temp_unit}", f"{temperature:.1f}{temp_unit}")
-                col2.metric("💧 Humidity (%)", f"{data['hourly']['relative_humidity_2m'][0]}%")
-                col3.metric("💨 Wind Speed (m/s)", f"{data['hourly']['wind_speed_10m'][0]} m/s")
+        st.write(f":thermometer: **Current temperature:** {current_temperature}°F")
+        st.write(f":sunny:**Weather condition:** {current_condition}")
+        st.write(f":vertical_traffic_light:**Wind speed:** {current_wind_speed} mph")
+        st.write(f":droplet: **Precipitation:** {precipitation_total} mm ({precipitation_type})")
 
-                if "Temperature" in parameter_options:
-                    temperatures = data['hourly']['temperature_2m'][:forecast_duration]
-                    if unit == "Fahrenheit (°F)":
-                        temperatures = [(temp * 9/5) + 32 for temp in temperatures]
-                    df[f"Temperature ({temp_unit})"] = temperatures
-                    st.subheader(f"Temperature Forecast")
-                    st.line_chart(df.set_index("Time")[f"Temperature ({temp_unit})"])
-
-                if "Humidity" in parameter_options:
-                    df["Humidity"] = data['hourly']['relative_humidity_2m'][:forecast_duration]
-                    st.subheader(f"Humidity Forecast")
-                    st.line_chart(df.set_index("Time")["Humidity"])
+        st.write("**Hourly Forecast Structure:**")
+        for hour in forecast.hourly:
+            hourly_forecast_df = forecast.hourly.to_pandas()
+        st.write(hourly_forecast_df)
+    else:
+        st.write("Error: Could not retrieve forecast data.")
