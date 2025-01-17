@@ -6,11 +6,10 @@ from datetime import datetime, timedelta
 from dictionary import *  
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Coach", "About", "Countdown", "Weather"])
+page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather"])
 
 if page == "Coach":
     # ------------------------ Training Plan Generator Functions ------------------------
-
     def generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days, goal):
         """
         Generates a training plan based on current long run distance, number of weeks to race, and other training parameters.
@@ -97,32 +96,35 @@ if page == "Coach":
         rest = "Rest or walk"
 
         day_plans = {
+            # Monday-Wednesday-Friday
             "Monday-Wednesday-Friday": {
                 "Monday": light,
-                "Wednesday": moderate,
-                "Friday": hard,
                 "Tuesday": cross_train,
+                "Wednesday": moderate,
                 "Thursday": cross_train,
+                "Friday": hard,
                 "Saturday": rest,
-                "Sunday": rest
+                "Sunday": rest 
             },
-            "Tuesday-Thursday-Sunday": {
+            # Tuesday-Thursday-Saturday
+            "Tuesday-Thursday-Saturday": {
                 "Monday": cross_train,
                 "Tuesday": light,
                 "Wednesday": cross_train,
                 "Thursday": moderate,
                 "Friday": rest,
-                "Saturday": rest,
-                "Sunday": hard
+                "Saturday": hard,
+                "Sunday": rest 
             },
-            "Wednesday-Friday-Saturday": {
+            # Wednesday-Friday-Sunday
+            "Wednesday-Friday-Sunday": {
                 "Monday": rest,
                 "Tuesday": rest,
                 "Wednesday": light,
                 "Thursday": cross_train,
                 "Friday": moderate,
-                "Saturday": hard,
-                "Sunday": rest
+                "Saturday": cross_train,
+                "Sunday": hard
             }
         }
 
@@ -132,7 +134,54 @@ if page == "Coach":
         
         return weekly_plan
 
-    # ------------------------ User Input Form ------------------------
+    # ------------------------ User Input Form --------------------------------
+    def countdown(race_date):
+        """
+        Calculates the number of days until the specified race date and displays a progress bar indicating the time remaining. 
+        """
+        # Calculate the number of days until the race
+        today = datetime.now().date()
+        days_until_race = (race_date - today).days
+        total_days = 16 * 7  # Total days in 16 weeks
+
+        if days_until_race > 0:
+            st.subheader(f"{days_until_race} days until your race!")
+
+            # Calculate progress based on the benchmark periods (estimated)
+            # the week of the race will be 100%
+            if days_until_race <= 7:
+                progress = 1.0
+            # ~ a week out from the race
+            elif days_until_race <= 11:
+                progress = 0.9
+            # ~ a month out from the race
+            elif days_until_race <= 28:
+                progress = 0.75
+            # ~ two months out from the race
+            elif days_until_race <= 56:
+                progress = 0.5
+            # ~ three months out from the race 
+            elif days_until_race <= 84:
+                progress = 0.25
+            else:
+                progress = 0.0
+
+            st.progress(progress)
+
+            # Show progress messages
+            if progress == 1.0:
+                st.markdown("🎉 You're ready for the race! 🎉")
+            elif progress >= 0.75:
+                st.markdown("🏃‍♂️ Almost there! 🏃‍♀️")
+            elif progress >= 0.5:
+                st.markdown("💪 Keep pushing! 💪")
+            else:
+                st.markdown("👟 Let's get moving! 👟")
+
+        elif days_until_race < 0:
+            st.subheader(f"The race has passed, how did you do?")
+        else:
+            st.subheader("Race day is here! Good luck and have fun!")
 
     # Title and description of the app
     st.title("Create Your Custom Training Plan")
@@ -140,7 +189,7 @@ if page == "Coach":
     Hey there! Ready to train for your next big race? Whether it's a 5K, 10K, Half Marathon, or Marathon, we've got your back.
     We'll tailor a training plan that fits your timeline and fitness level. Remember, consistency is key, so let's get started!
     """)
-    
+
     # User inputs
     goal = st.selectbox("What race are you training for?", ["5K", "10K", "Half Marathon", "Marathon"])
     current_long_run = st.number_input("What is your current longest run (in miles)?", min_value=0.0, step=0.5)
@@ -152,11 +201,14 @@ if page == "Coach":
     else:
         preferred_days = st.selectbox(
             "Select your preferred running days",
-            ["Monday-Wednesday-Friday", "Tuesday-Thursday-Sunday", "Wednesday-Friday-Saturday"]
+            ["Monday-Wednesday-Friday", "Tuesday-Thursday-Saturday", "Wednesday-Friday-Sunday"]
         )
         
         # Generate the training plan when the button is pressed
         if st.button("Generate Plan"):
+            # Call the countdown function to show progress
+            countdown(race_date)
+
             weeks_to_race = (race_date - datetime.now().date()).days // 7
             min_weeks_required = {
                 "5K": 6,
@@ -169,10 +221,14 @@ if page == "Coach":
                 st.warning(f"You need at least {min_weeks_required[goal]} weeks to prepare for a {goal}.")
             else:
                 race_distance = race_distances.get(goal, 0)
-                plan = generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days, goal)
-                
+                plan = generate_generic_plan(
+                    current_long_run, weeks_to_race, 
+                    easy_run_variants, speedwork_variants, 
+                    cross_training_variants, race_distance, 
+                    preferred_days, goal
+                )
+
                 st.success("Training plan generated!")
-                
                 for week in plan:
                     st.subheader(f"Week {week['Week']}")
                     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -197,7 +253,7 @@ elif page == "About":
     4. **Set your race date**: pick the date of your race.
     5. **Choose your preferred running days**: select the days you prefer to run from the dropdown menu.
     6. **Generate plan**: click the "Generate Plan" button to create your custom training plan.
-    7. **Countdown**: go to the "Countdown" page to see how many days are left
+    7. **Streches**: go to the "Stretches" page to see how to warm up and cool down properly.
     8. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
     """)
 
@@ -280,55 +336,32 @@ elif page == "About":
     - **Pilates**: A workout that focuses on strengthening the core, improving flexibility, and enhancing overall body alignment and posture, often involving bodyweight exercises or equipment like reformers.
     """)
 
-elif page == "Countdown":
-    st.title("Countdown to Race Day")
+elif page == "Stretches":
+    st.title("Stretching Exercises")
 
-    # User inputs the race date
-    race_date = st.date_input("When is the race again?")
+    with st.expander("Dynamic Stretches"):
+        st.write('''
+            Alright, team! Dynamic stretches are all about getting your body warmed up 
+            and ready to move. These are active movements like leg swings, arm circles, 
+            and walking lunges that loosen up those muscles and get your blood flowing. 
+            Always do these **before** you hit the trail—think of it as flipping the "on" switch 
+            for your body. Let's prep like champions!
 
-    # Calculate the number of days until the race
-    today = datetime.now().date()
-    days_until_race = (race_date - today).days
-    total_days = 16 * 7  # Total days in 16 weeks
+            Not sure where to start? No problem, check out this [video guide](https://youtu.be/sI1iHQSHOQE?si=pmnXCyl00QmnK6_8).
+        ''')
 
-    if days_until_race > 0:
-        st.subheader(f"{days_until_race} days until your race!")
-
-        # Calculate progress based on the benchmark periods (estimated)
-        # the week of the race will be 100%
-        if days_until_race <= 7:
-            progress = 1.0
-        # ~ a week out from the race
-        elif days_until_race <= 11:
-            progress = 0.9
-        # ~ a mounth out from the race
-        elif days_until_race <= 28:
-            progress = 0.75
-        # ~ two months out from the race
-        elif days_until_race <= 56:
-            progress = 0.5
-        # ~ three months out from the race 
-        elif days_until_race <= 84:
-            progress = 0.25
-        else:
-            progress = 0.0
-
-        st.progress(progress)
-
-        # Show progress messages
-        if progress == 1.0:
-            st.markdown("🎉 You're ready for the race! 🎉")
-        elif progress >= 0.75:
-            st.markdown("🏃‍♂️ Almost there! 🏃‍♀️")
-        elif progress >= 0.5:
-            st.markdown("💪 Keep pushing! 💪")
-        else:
-            st.markdown("👟 Let's get moving! 👟")
-
-    elif days_until_race < 0:
-        st.subheader(f"The race has past, how did you do?")
-    else:
-        st.subheader("Race day is here! Good luck and have fun!")
+    with st.expander("Static Stretches"):
+        st.write('''
+            Listen up, runners! Static stretches are your go-to after a good run. 
+            These are the stretches where you hold a position to really work on 
+            flexibility—hamstring stretches, calf stretches, triceps stretches, you name it. 
+            Do these **after** your workout when your muscles are warmed up. This helps 
+            keep you loose and prevents injuries down the line. Stay disciplined—flexibility 
+            is just as important as endurance!
+            
+            Not sure where to start? No problem, check out this [video guide](https://youtu.be/12pDBWdR3I4?si=U_OoBCgNRH3rxyK-).
+        ''')
+        
 elif page == "Weather":
     st.title("Weather Monitor 🌦️")
     def get_coordinates(city_name):
