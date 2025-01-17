@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dictionary import *  
 from pymeteosource.api import Meteosource
 from pymeteosource.types import tiers, sections, langs, units
+from geopy.geocoders import Nominatim
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather"])
@@ -364,45 +365,60 @@ elif page == "Stretches":
             Not sure where to start? No problem, check out this [video guide](https://youtu.be/12pDBWdR3I4?si=U_OoBCgNRH3rxyK-).
         ''')
         
-
 elif page == "Weather":
+    # ------------------------ Weather Monitor ------------------------
+    def get_coordinates_from_city(city_name):
+        """
+        Function to get latitude and longitude from a city name using Geopy.
+        """
+        geolocator = Nominatim(user_agent="weather_app")
+        location = geolocator.geocode(city_name)
+        
+        if location:
+            return location.latitude, location.longitude
+        else:
+            st.write(f"Error: Could not find coordinates for city '{city_name}'")
+            return None, None
+
     st.title("Weather :partly_sunny_rain: Monitor")
-    # Set your API key and tier
+    
     meteosource_api_key = "5winhpzkh9hxhyo93fnp6anbcwtchsriofsdpi7w"
     tier = tiers.FREE  
     meteosource = Meteosource(meteosource_api_key, tier)
 
-    # Coordinates for the location (San Francisco example)
-    latitude = 35.045631
-    longitude = -85.309677
+    city_name = st.text_input("Enter the city name:")
+    if st.button("Get Weather"):
+        if city_name:
+            latitude, longitude = get_coordinates_from_city(city_name)
+            
+            if latitude and longitude:
+                forecast = meteosource.get_point_forecast(
+                    lat=latitude,
+                    lon=longitude,
+                    sections=[sections.CURRENT, sections.HOURLY],  
+                    tz='America/New_York',  
+                    lang=langs.ENGLISH,  
+                    units=units.US  # Units (e.g., Fahrenheit for temperature)
+                )
 
-    # Fetch the forecast data using Meteosource
-    forecast = meteosource.get_point_forecast(
-        lat=latitude,
-        lon=longitude,
-        sections=[sections.CURRENT, sections.HOURLY],  
-        tz='America/New_York',  
-        lang=langs.ENGLISH,  
-        units=units.US  # Units (e.g., Fahrenheit for temperature)
-    )
+                if forecast:
+                    current_temperature = forecast.current.temperature
+                    current_condition = forecast.current.summary
+                    current_wind_speed = forecast.current.wind.speed
+                    
+                    current_precipitation = forecast.current.precipitation
+                    precipitation_total = current_precipitation.total  # Total precipitation (in mm)
+                    precipitation_type = current_precipitation.type  # Type of precipitation (e.g., rain, snow)
 
-    if forecast:
-        current_temperature = forecast.current.temperature
-        current_condition = forecast.current.summary
-        current_wind_speed = forecast.current.wind.speed
-        
-        current_precipitation = forecast.current.precipitation
-        precipitation_total = current_precipitation.total  # Total precipitation (in mm)
-        precipitation_type = current_precipitation.type  # Type of precipitation (e.g., rain, snow)
+                    st.write(f":thermometer: **Current temperature:** {current_temperature}°F")
+                    st.write(f":sunny:**Weather condition:** {current_condition}")
+                    st.write(f":vertical_traffic_light:**Wind speed:** {current_wind_speed} mph")
+                    st.write(f":droplet: **Precipitation:** {precipitation_total} mm ({precipitation_type})")
 
-        st.write(f":thermometer: **Current temperature:** {current_temperature}°F")
-        st.write(f":sunny:**Weather condition:** {current_condition}")
-        st.write(f":vertical_traffic_light:**Wind speed:** {current_wind_speed} mph")
-        st.write(f":droplet: **Precipitation:** {precipitation_total} mm ({precipitation_type})")
+                    # Display hourly forecast in DataFrame format
+                    st.write("**Hourly Forecast Structure:**")
+                    hourly_forecast_df = forecast.hourly.to_pandas()
+                    st.write(hourly_forecast_df)
 
-        st.write("**Hourly Forecast Structure:**")
-        for hour in forecast.hourly:
-            hourly_forecast_df = forecast.hourly.to_pandas()
-        st.write(hourly_forecast_df)
-    else:
-        st.write("Error: Could not retrieve forecast data.")
+                else:
+                    st.write("Error: Could not retrieve forecast data.")
