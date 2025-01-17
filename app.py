@@ -9,7 +9,7 @@ from pymeteosource.types import tiers, sections, langs, units
 from geopy.geocoders import Nominatim
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather"])
+page = st.sidebar.radio("Go to", ["Coach", "About", "Injury Prevention", "Weather", "Garmin"])
 
 if page == "Coach":
     # ------------------------ Training Plan Generator Functions ------------------------
@@ -339,7 +339,7 @@ elif page == "About":
     - **Pilates**: A workout that focuses on strengthening the core, improving flexibility, and enhancing overall body alignment and posture, often involving bodyweight exercises or equipment like reformers.
     """)
 
-elif page == "Stretches":
+elif page == "Injury Prevention":
     st.title("Stretching Exercises")
 
     with st.expander("Dynamic Stretches"):
@@ -422,3 +422,6 @@ elif page == "Weather":
 
                 else:
                     st.write("Error: Could not retrieve forecast data.")
+
+elif page == "Garmin":
+    pass
