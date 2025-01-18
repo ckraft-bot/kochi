@@ -1,16 +1,20 @@
+import streamlit as st
 import pandas as pd
 import random
 import requests
-import streamlit as st
 from datetime import datetime, timedelta
 from dictionary import *  
+from pymeteosource.api import Meteosource
+from pymeteosource.types import tiers, sections, langs, units
+from geopy.geocoders import Nominatim
+import folium
+from folium.plugins import MarkerCluster
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Coach", "About", "Countdown", "Weather"])
+page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather", "Store"])
 
 if page == "Coach":
     # ------------------------ Training Plan Generator Functions ------------------------
-
     def generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days, goal):
         """
         Generates a training plan based on current long run distance, number of weeks to race, and other training parameters.
@@ -97,32 +101,35 @@ if page == "Coach":
         rest = "Rest or walk"
 
         day_plans = {
+            # Monday-Wednesday-Friday
             "Monday-Wednesday-Friday": {
                 "Monday": light,
-                "Wednesday": moderate,
-                "Friday": hard,
                 "Tuesday": cross_train,
+                "Wednesday": moderate,
                 "Thursday": cross_train,
+                "Friday": hard,
                 "Saturday": rest,
-                "Sunday": rest
+                "Sunday": rest 
             },
-            "Tuesday-Thursday-Sunday": {
+            # Tuesday-Thursday-Saturday
+            "Tuesday-Thursday-Saturday": {
                 "Monday": cross_train,
                 "Tuesday": light,
                 "Wednesday": cross_train,
                 "Thursday": moderate,
                 "Friday": rest,
-                "Saturday": rest,
-                "Sunday": hard
+                "Saturday": hard,
+                "Sunday": rest 
             },
-            "Wednesday-Friday-Saturday": {
+            # Wednesday-Friday-Sunday
+            "Wednesday-Friday-Sunday": {
                 "Monday": rest,
                 "Tuesday": rest,
                 "Wednesday": light,
                 "Thursday": cross_train,
                 "Friday": moderate,
-                "Saturday": hard,
-                "Sunday": rest
+                "Saturday": cross_train,
+                "Sunday": hard
             }
         }
 
@@ -132,7 +139,54 @@ if page == "Coach":
         
         return weekly_plan
 
-    # ------------------------ User Input Form ------------------------
+    # ------------------------ User Input Form --------------------------------
+    def countdown(race_date):
+        """
+        Calculates the number of days until the specified race date and displays a progress bar indicating the time remaining. 
+        """
+        # Calculate the number of days until the race
+        today = datetime.now().date()
+        days_until_race = (race_date - today).days
+        total_days = 16 * 7  # Total days in 16 weeks
+
+        if days_until_race > 0:
+            st.subheader(f"{days_until_race} days until your race!")
+
+            # Calculate progress based on the benchmark periods (estimated)
+            # the week of the race will be 100%
+            if days_until_race <= 7:
+                progress = 1.0
+            # ~ a week out from the race
+            elif days_until_race <= 11:
+                progress = 0.9
+            # ~ a month out from the race
+            elif days_until_race <= 28:
+                progress = 0.75
+            # ~ two months out from the race
+            elif days_until_race <= 56:
+                progress = 0.5
+            # ~ three months out from the race 
+            elif days_until_race <= 84:
+                progress = 0.25
+            else:
+                progress = 0.0
+
+            st.progress(progress)
+
+            # Show progress messages
+            if progress == 1.0:
+                st.markdown("🎉 You're ready for the race! 🎉")
+            elif progress >= 0.75:
+                st.markdown("🏃‍♂️ Almost there! 🏃‍♀️")
+            elif progress >= 0.5:
+                st.markdown("💪 Keep pushing! 💪")
+            else:
+                st.markdown("👟 Let's get moving! 👟")
+
+        elif days_until_race < 0:
+            st.subheader(f"The race has passed, how did you do?")
+        else:
+            st.subheader("Race day is here! Good luck and have fun!")
 
     # Title and description of the app
     st.title("Create Your Custom Training Plan")
@@ -140,7 +194,7 @@ if page == "Coach":
     Hey there! Ready to train for your next big race? Whether it's a 5K, 10K, Half Marathon, or Marathon, we've got your back.
     We'll tailor a training plan that fits your timeline and fitness level. Remember, consistency is key, so let's get started!
     """)
-    
+
     # User inputs
     goal = st.selectbox("What race are you training for?", ["5K", "10K", "Half Marathon", "Marathon"])
     current_long_run = st.number_input("What is your current longest run (in miles)?", min_value=0.0, step=0.5)
@@ -152,11 +206,14 @@ if page == "Coach":
     else:
         preferred_days = st.selectbox(
             "Select your preferred running days",
-            ["Monday-Wednesday-Friday", "Tuesday-Thursday-Sunday", "Wednesday-Friday-Saturday"]
+            ["Monday-Wednesday-Friday", "Tuesday-Thursday-Saturday", "Wednesday-Friday-Sunday"]
         )
         
         # Generate the training plan when the button is pressed
         if st.button("Generate Plan"):
+            # Call the countdown function to show progress
+            countdown(race_date)
+
             weeks_to_race = (race_date - datetime.now().date()).days // 7
             min_weeks_required = {
                 "5K": 6,
@@ -169,10 +226,14 @@ if page == "Coach":
                 st.warning(f"You need at least {min_weeks_required[goal]} weeks to prepare for a {goal}.")
             else:
                 race_distance = race_distances.get(goal, 0)
-                plan = generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days, goal)
-                
+                plan = generate_generic_plan(
+                    current_long_run, weeks_to_race, 
+                    easy_run_variants, speedwork_variants, 
+                    cross_training_variants, race_distance, 
+                    preferred_days, goal
+                )
+
                 st.success("Training plan generated!")
-                
                 for week in plan:
                     st.subheader(f"Week {week['Week']}")
                     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -197,7 +258,7 @@ elif page == "About":
     4. **Set your race date**: pick the date of your race.
     5. **Choose your preferred running days**: select the days you prefer to run from the dropdown menu.
     6. **Generate plan**: click the "Generate Plan" button to create your custom training plan.
-    7. **Countdown**: go to the "Countdown" page to see how many days are left
+    7. **Streches**: go to the "Stretches" page to see how to warm up and cool down properly.
     8. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
     """)
 
@@ -280,124 +341,170 @@ elif page == "About":
     - **Pilates**: A workout that focuses on strengthening the core, improving flexibility, and enhancing overall body alignment and posture, often involving bodyweight exercises or equipment like reformers.
     """)
 
-elif page == "Countdown":
-    st.title("Countdown to Race Day")
+elif page == "Stretches":
+    st.title("Stretching Exercises")
 
-    # User inputs the race date
-    race_date = st.date_input("When is the race again?")
+    with st.expander("Dynamic Stretches"):
+        st.write('''
+            Alright, team! Dynamic stretches are all about getting your body warmed up 
+            and ready to move. These are active movements like leg swings, arm circles, 
+            and walking lunges that loosen up those muscles and get your blood flowing. 
+            Always do these **before** you hit the trail—think of it as flipping the "on" switch 
+            for your body. Let's prep like champions!
 
-    # Calculate the number of days until the race
-    today = datetime.now().date()
-    days_until_race = (race_date - today).days
-    total_days = 16 * 7  # Total days in 16 weeks
+            Not sure where to start? No problem, check out this [video guide](https://youtu.be/sI1iHQSHOQE?si=pmnXCyl00QmnK6_8).
+        ''')
 
-    if days_until_race > 0:
-        st.subheader(f"{days_until_race} days until your race!")
-
-        # Calculate progress based on the benchmark periods (estimated)
-        # the week of the race will be 100%
-        if days_until_race <= 7:
-            progress = 1.0
-        # ~ a week out from the race
-        elif days_until_race <= 11:
-            progress = 0.9
-        # ~ a mounth out from the race
-        elif days_until_race <= 28:
-            progress = 0.75
-        # ~ two months out from the race
-        elif days_until_race <= 56:
-            progress = 0.5
-        # ~ three months out from the race 
-        elif days_until_race <= 84:
-            progress = 0.25
-        else:
-            progress = 0.0
-
-        st.progress(progress)
-
-        # Show progress messages
-        if progress == 1.0:
-            st.markdown("🎉 You're ready for the race! 🎉")
-        elif progress >= 0.75:
-            st.markdown("🏃‍♂️ Almost there! 🏃‍♀️")
-        elif progress >= 0.5:
-            st.markdown("💪 Keep pushing! 💪")
-        else:
-            st.markdown("👟 Let's get moving! 👟")
-
-    elif days_until_race < 0:
-        st.subheader(f"The race has past, how did you do?")
-    else:
-        st.subheader("Race day is here! Good luck and have fun!")
+    with st.expander("Static Stretches"):
+        st.write('''
+            Listen up, runners! Static stretches are your go-to after a good run. 
+            These are the stretches where you hold a position to really work on 
+            flexibility—hamstring stretches, calf stretches, triceps stretches, you name it. 
+            Do these **after** your workout when your muscles are warmed up. This helps 
+            keep you loose and prevents injuries down the line. Stay disciplined—flexibility 
+            is just as important as endurance!
+            
+            Not sure where to start? No problem, check out this [video guide](https://youtu.be/12pDBWdR3I4?si=U_OoBCgNRH3rxyK-).
+        ''')
+        
 elif page == "Weather":
-    st.title("Weather Monitor 🌦️")
-    def get_coordinates(city_name):
-        url = f"https://nominatim.openstreetmap.org/search?q={city_name}&format=json&limit=1"
-        headers = {"User-Agent": "WeatherDashboardApp/1.0 (contact@example.com)"}
-        response = requests.get(url, headers=headers)
-
-        if response.status_code == 200:
-            location_data = response.json()
-            if location_data:
-                location = location_data[0]
-                return float(location['lat']), float(location['lon'])
-            else:
-                st.warning("City not found. Try adding the country name (e.g., 'Paris, France').")
-                return None, None
+    # ------------------------ Weather Monitor ------------------------
+    def get_coordinates_from_city(city_name):
+        """
+        Function to get latitude and longitude from a city name using Geopy.
+        """
+        geolocator = Nominatim(user_agent="weather_app")
+        location = geolocator.geocode(city_name)
+        
+        if location:
+            return location.latitude, location.longitude
         else:
-            st.error(f"API request failed with status code {response.status_code}: {response.text}")
+            st.write(f"Error: Could not find coordinates for city '{city_name}'")
             return None, None
 
-    def get_weather_data(lat, lon, hours):
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&forecast_days=2"
-        response = requests.get(url)
-        
-        if response.status_code == 200:
-            return response.json()
-        else:
-            st.error("Failed to retrieve weather data.")
-            return None
+    st.title("Weather :partly_sunny_rain: Monitor")
+    
+    meteosource_api_key = "5winhpzkh9hxhyo93fnp6anbcwtchsriofsdpi7w"
+    tier = tiers.FREE  
+    meteosource = Meteosource(meteosource_api_key, tier)
 
-    st.write("Look at the weather to dress appropriately for your outdoor training session!")
+    city_name = st.text_input("Enter the city name:")
+    if st.button("Get Weather"):
+        if city_name:
+            latitude, longitude = get_coordinates_from_city(city_name)
+            
+            if latitude and longitude:
+                forecast = meteosource.get_point_forecast(
+                    lat=latitude,
+                    lon=longitude,
+                    sections=[sections.CURRENT, sections.HOURLY],  
+                    tz='America/New_York',  
+                    lang=langs.ENGLISH,  
+                    units=units.US  # Units (e.g., Fahrenheit for temperature)
+                )
 
-    city_name = st.text_input("Enter city name", value="New York City")
-    forecast_duration = st.slider("Select forecast duration (hours)", min_value=12, max_value=48, value=24, step=12)
-    unit = st.radio("Select temperature unit", ["Celsius (°C)", "Fahrenheit (°F)"])
-    parameter_options = st.multiselect(
-        "Choose weather parameters to display",
-        options=["Temperature", "Humidity", "Wind Speed"],
-        default=["Temperature", "Humidity"]
-    )
+                if forecast:
+                    current_temperature = forecast.current.temperature
+                    current_condition = forecast.current.summary
+                    current_wind_speed = forecast.current.wind.speed
+                    
+                    current_precipitation = forecast.current.precipitation
+                    precipitation_total = current_precipitation.total  # Total precipitation (in mm)
+                    precipitation_type = current_precipitation.type  # Type of precipitation (e.g., rain, snow)
 
-    if st.button("Get local weather"):
-        lat, lon = get_coordinates(city_name)
-        if lat and lon:
-            data = get_weather_data(lat, lon, forecast_duration)
-            if data:
-                times = [datetime.now() + timedelta(hours=i) for i in range(forecast_duration)]
-                df = pd.DataFrame({"Time": times})
+                    st.write(f":thermometer: **Current temperature:** {current_temperature}°F")
+                    st.write(f":sunny:**Weather condition:** {current_condition}")
+                    st.write(f":vertical_traffic_light:**Wind speed:** {current_wind_speed} mph")
+                    st.write(f":droplet: **Precipitation:** {precipitation_total} mm ({precipitation_type})")
 
-                st.subheader("Current Weather Summary")
-                col1, col2, col3 = st.columns(3)
-                temperature = data['hourly']['temperature_2m'][0]
-                if unit == "Fahrenheit (°F)":
-                    temperature = (temperature * 9/5) + 32
-                    temp_unit = "°F"
+                    # Display hourly forecast in DataFrame format
+                    st.write("**Hourly Forecast Structure:**")
+                    hourly_forecast_df = forecast.hourly.to_pandas()
+                    st.write(hourly_forecast_df)
+
                 else:
-                    temp_unit = "°C"
-                col1.metric(f"🌡️ Temperature {temp_unit}", f"{temperature:.1f}{temp_unit}")
-                col2.metric("💧 Humidity (%)", f"{data['hourly']['relative_humidity_2m'][0]}%")
-                col3.metric("💨 Wind Speed (m/s)", f"{data['hourly']['wind_speed_10m'][0]} m/s")
+                    st.write("Error: Could not retrieve forecast data.")
 
-                if "Temperature" in parameter_options:
-                    temperatures = data['hourly']['temperature_2m'][:forecast_duration]
-                    if unit == "Fahrenheit (°F)":
-                        temperatures = [(temp * 9/5) + 32 for temp in temperatures]
-                    df[f"Temperature ({temp_unit})"] = temperatures
-                    st.subheader(f"Temperature Forecast")
-                    st.line_chart(df.set_index("Time")[f"Temperature ({temp_unit})"])
+elif page == "Store":
+    # ------------------------ Nearby Running Stores ------------------------
+    def get_coordinates(city_name, state_name):
+        """Convert city and state name to latitude and longitude."""
+        geolocator = Nominatim(user_agent="runner_app")
+        location_query = f"{city_name}, {state_name}"
+        location = geolocator.geocode(location_query)
+        if location:
+            return location.latitude, location.longitude
+        else:
+            return None, None
 
-                if "Humidity" in parameter_options:
-                    df["Humidity"] = data['hourly']['relative_humidity_2m'][:forecast_duration]
-                    st.subheader(f"Humidity Forecast")
-                    st.line_chart(df.set_index("Time")["Humidity"])
+    def fetch_running_stores(lat, lon, radius=5000):  # radius in meters
+        """Query OpenStreetMap Overpass API for running and athletic stores near a location."""
+        overpass_url = "https://overpass-api.de/api/interpreter"
+        query = f"""
+        [out:json];
+        (
+        node["shop"="sports"](around:{radius},{lat},{lon});
+        node["shop"="outdoor"](around:{radius},{lat},{lon});
+        node["shop"="shoes"](around:{radius},{lat},{lon});
+        );
+        out body;
+        """
+
+        response = requests.get(overpass_url, params={"data": query})
+        response.raise_for_status()
+        data = response.json()
+
+        running_shops = []
+        for element in data["elements"]:
+            tags = element.get("tags", {})
+            name = tags.get("name", "").lower()
+            description = tags.get("description", "").lower()
+            if "run" in name or "athletic" in name or "shoe" in name or "running" in description or "athletic" in description:
+                running_shops.append({
+                    "name": tags.get("name", "Unknown"),
+                    "lat": element["lat"],
+                    "lon": element["lon"],
+                })
+        return running_shops
+
+    def display_map(lat, lon, stores):
+        """Generate a Folium map with running stores marked."""
+        # Create map centered at the given coordinates
+        folium_map = folium.Map(location=[lat, lon], zoom_start=12)
+        marker_cluster = MarkerCluster().add_to(folium_map)
+
+        # Add user location marker
+        folium.Marker([lat, lon], tooltip="You are here", icon=folium.Icon(color="blue")).add_to(folium_map)
+
+        # Add markers for running stores
+        for store in stores:
+            folium.Marker(
+                [store["lat"], store["lon"]],
+                tooltip=store["name"],
+                icon=folium.Icon(color="green", icon="shopping-cart"),
+            ).add_to(marker_cluster)
+
+        return folium_map
+
+    # Streamlit app
+    st.title("Nearby Running Stores")
+    city = st.text_input("City name:")
+    state = st.text_input("State or Country name:")
+
+    if city and state:
+        lat, lon = get_coordinates(city, state)
+        if lat and lon:
+            st.write(f"Coordinates for {city}, {state}: Latitude {lat}, Longitude {lon}")
+
+            running_stores = fetch_running_stores(lat, lon)
+            if running_stores:
+                st.write(f"Found {len(running_stores)} stores:")
+                for store in running_stores:
+                    st.write(f"- {store['name']} (Lat: {store['lat']}, Lon: {store['lon']})")
+
+                folium_map = display_map(lat, lon, running_stores)
+                st_folium = st.components.v1.html(folium_map._repr_html_(), height=500)
+            else:
+                st.write("No running stores found nearby.")
+        else:
+            st.write("Could not find the location. Please enter a valid city and state name.")
