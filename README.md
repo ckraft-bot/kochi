@@ -19,6 +19,7 @@ Kochi (코치) is a Korean term derived from the English word "coach." This [app
 6. **Generate plan:** Click the "Generate Plan" button to create your custom training plan.
 7. **Streches**: go to the "Stretches" page to see how to warm up and cool down properly.
 8. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
+9. **Store:** Go to the "Store" page to find nearby (or within 5 km/3.1 mi radius) running stores.
 
 ### App - Setup
 To run this app locally, follow these steps:
