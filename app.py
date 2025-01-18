@@ -7,9 +7,11 @@ from dictionary import *
 from pymeteosource.api import Meteosource
 from pymeteosource.types import tiers, sections, langs, units
 from geopy.geocoders import Nominatim
+import folium
+from folium.plugins import MarkerCluster
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Coach", "About", "Injury Prevention", "Weather", "Garmin"])
+page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather", "Store"])
 
 if page == "Coach":
     # ------------------------ Training Plan Generator Functions ------------------------
@@ -339,7 +341,7 @@ elif page == "About":
     - **Pilates**: A workout that focuses on strengthening the core, improving flexibility, and enhancing overall body alignment and posture, often involving bodyweight exercises or equipment like reformers.
     """)
 
-elif page == "Injury Prevention":
+elif page == "Stretches":
     st.title("Stretching Exercises")
 
     with st.expander("Dynamic Stretches"):
@@ -423,5 +425,90 @@ elif page == "Weather":
                 else:
                     st.write("Error: Could not retrieve forecast data.")
 
-elif page == "Garmin":
-    pass
+elif page == "Store":
+    # ------------------------ Nearby Running Stores ------------------------
+    def get_coordinates(city_name, state_name):
+        """Convert city and state name to latitude and longitude."""
+        geolocator = Nominatim(user_agent="runner_app")
+        location_query = f"{city_name}, {state_name}"
+        location = geolocator.geocode(location_query)
+        if location:
+            return location.latitude, location.longitude
+        else:
+            return None, None
+
+    def fetch_running_stores(lat, lon, radius=5000):  # radius in meters
+        """Query OpenStreetMap Overpass API for running and athletic stores near a location."""
+        overpass_url = "https://overpass-api.de/api/interpreter"
+        query = f"""
+        [out:json];
+        (
+        node["shop"="sports"](around:{radius},{lat},{lon});
+        node["shop"="outdoor"](around:{radius},{lat},{lon});
+        node["shop"="shoes"](around:{radius},{lat},{lon});
+        );
+        out body;
+        """
+
+        response = requests.get(overpass_url, params={"data": query})
+        response.raise_for_status()
+        data = response.json()
+
+        running_shops = []
+        for element in data["elements"]:
+            tags = element.get("tags", {})
+            name = tags.get("name", "").lower()
+            description = tags.get("description", "").lower()
+            if "run" in name or "athletic" in name or "shoe" in name or "running" in description or "athletic" in description:
+                running_shops.append({
+                    "name": tags.get("name", "Unknown"),
+                    "lat": element["lat"],
+                    "lon": element["lon"],
+                })
+        return running_shops
+
+    def display_map(lat, lon, stores):
+        """Generate a Folium map with running stores marked."""
+        # Create map centered at the given coordinates
+        folium_map = folium.Map(location=[lat, lon], zoom_start=12)
+        marker_cluster = MarkerCluster().add_to(folium_map)
+
+        # Add user location marker
+        folium.Marker([lat, lon], tooltip="You are here", icon=folium.Icon(color="blue")).add_to(folium_map)
+
+        # Add markers for running stores
+        for store in stores:
+            folium.Marker(
+                [store["lat"], store["lon"]],
+                tooltip=store["name"],
+                icon=folium.Icon(color="green", icon="shopping-cart"),
+            ).add_to(marker_cluster)
+
+        return folium_map
+
+    # Streamlit app
+    st.title("Nearby Running Stores")
+    city = st.text_input("City name:")
+    state = st.text_input("State or Country name:")
+
+    if city and state:
+        # Get coordinates
+        lat, lon = get_coordinates(city, state)
+        if lat and lon:
+            st.write(f"Coordinates for {city}, {state}: Latitude {lat}, Longitude {lon}")
+
+            # Fetch running stores
+            st.write("Fetching nearby running stores...")
+            running_stores = fetch_running_stores(lat, lon)
+            if running_stores:
+                st.write(f"Found {len(running_stores)} stores:")
+                for store in running_stores:
+                    st.write(f"- {store['name']} (Lat: {store['lat']}, Lon: {store['lon']})")
+
+                # Display map
+                folium_map = display_map(lat, lon, running_stores)
+                st_folium = st.components.v1.html(folium_map._repr_html_(), height=500)
+            else:
+                st.write("No running stores found nearby.")
+        else:
+            st.write("Could not find the location. Please enter a valid city and state name.")
