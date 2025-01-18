@@ -492,20 +492,16 @@ elif page == "Store":
     state = st.text_input("State or Country name:")
 
     if city and state:
-        # Get coordinates
         lat, lon = get_coordinates(city, state)
         if lat and lon:
             st.write(f"Coordinates for {city}, {state}: Latitude {lat}, Longitude {lon}")
 
-            # Fetch running stores
-            st.write("Fetching nearby running stores...")
             running_stores = fetch_running_stores(lat, lon)
             if running_stores:
                 st.write(f"Found {len(running_stores)} stores:")
                 for store in running_stores:
                     st.write(f"- {store['name']} (Lat: {store['lat']}, Lon: {store['lon']})")
 
-                # Display map
                 folium_map = display_map(lat, lon, running_stores)
                 st_folium = st.components.v1.html(folium_map._repr_html_(), height=500)
             else:
