@@ -208,8 +208,7 @@ if page == "Coach":
             "Select your preferred running days",
             ["Monday-Wednesday-Friday", "Tuesday-Thursday-Saturday", "Wednesday-Friday-Sunday"]
         )
-        
-        # Generate the training plan when the button is pressed
+
         if st.button("Generate Plan"):
             # Call the countdown function to show progress
             countdown(race_date)
@@ -234,12 +233,26 @@ if page == "Coach":
                 )
 
                 st.success("Training plan generated!")
+                
+                # Convert the plan into a Pandas DataFrame
+                plan_df = pd.DataFrame(plan)
+
+                # Display the plan
                 for week in plan:
                     st.subheader(f"Week {week['Week']}")
                     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
                     for day in days_of_week:
                         if day in week:
                             st.text(f"{day}: {week[day]}")
+
+                # Allow users to download the training plan as a CSV file
+                csv = plan_df.to_csv(index=False).encode("utf-8")
+                st.download_button(
+                    label="📥 Export",
+                    data=csv,
+                    file_name=f"training_plan_{goal}.csv",
+                    mime="text/csv"
+                )
 
 elif page == "About":
     st.title("Understand the App")
