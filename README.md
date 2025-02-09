@@ -17,9 +17,10 @@ Kochi (코치) is a Korean term derived from the English word "coach." This [app
 4. **Set your race date:** Pick the date of your race.
 5. **Choose your preferred running days:** Select the days you prefer to run from the dropdown menu.
 6. **Generate plan:** Click the "Generate Plan" button to create your custom training plan.
-7. **Streches**: go to the "Stretches" page to see how to warm up and cool down properly.
-8. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
-9. **Store:** Go to the "Store" page to find nearby (or within 5 km/3.1 mi radius) running stores.
+7. **Export Plan*:** If you're pleased with the plan then click "Export" to save the plan to your device. You can watch the video ![here](Media/kochi_export_feature.mp4)
+8. **Streches**: Go to the "Stretches" page to see how to warm up and cool down properly.
+9. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
+10. **Store:** Go to the "Store" page to find nearby (or within 5 km/3.1 mi radius) running stores.
 
 ### App - Setup
 To run this app locally, follow these steps:
