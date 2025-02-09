@@ -22,29 +22,6 @@ Kochi (코치) is a Korean term derived from the English word "coach." This [app
 9. **Weather:** Go to the "Weather" page to see how you should dress for your outdoor training.
 10. **Store:** Go to the "Store" page to find nearby (or within 5 km/3.1 mi radius) running stores.
 
-### App - Setup
-To run this app locally, follow these steps:
-
-1. **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    ```
-
-2. **Navigate to the project directory:**
-    ```bash
-    cd <project-directory>
-    ```
-
-3. **Install the required dependencies:**
-    ```bash
-    pip install streamlit
-    ```
-
-4. **Run the Streamlit app:**
-    ```bash
-    streamlit run app.py
-    ```
-
 ### Code Structure
 - **Training Plan Generator Functions:** Functions to generate a training plan based on user inputs.
 - **User Input Form:** Collects user inputs such as race goal, current long run, race date, and preferred running days.
