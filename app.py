@@ -10,6 +10,12 @@ from geopy.geocoders import Nominatim
 import folium
 from folium.plugins import MarkerCluster
 
+def credit():
+    footer_html = """<div style='text-align: center;'>
+        <p>Developed 💻 by Claire Kraft</p>
+    </div>"""
+    st.markdown(footer_html, unsafe_allow_html=True)
+
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather", "Store"])
 
@@ -138,7 +144,7 @@ if page == "Coach":
             weekly_plan[day] = day_plan[day]
         
         return weekly_plan
-
+    
     # ------------------------ User Input Form --------------------------------
     def countdown(race_date):
         """
@@ -194,6 +200,7 @@ if page == "Coach":
     Hey there! Ready to train for your next big race? Whether it's a 5K, 10K, Half Marathon, or Marathon, we've got your back.
     We'll tailor a training plan that fits your timeline and fitness level. Remember, consistency is key, so let's get started!
     """)
+
 
     # User inputs
     goal = st.selectbox("What race are you training for?", ["5K", "10K", "Half Marathon", "Marathon"])
@@ -253,6 +260,8 @@ if page == "Coach":
                     file_name=f"training_plan_{goal}.csv",
                     mime="text/csv"
                 )
+    
+    credit()
 
 elif page == "About":
     st.title("Understand the App")
@@ -355,6 +364,8 @@ elif page == "About":
     - **Pilates**: A workout that focuses on strengthening the core, improving flexibility, and enhancing overall body alignment and posture, often involving bodyweight exercises or equipment like reformers.
     """)
 
+    credit()
+
 elif page == "Stretches":
     st.title("Stretching Exercises")
 
@@ -380,7 +391,9 @@ elif page == "Stretches":
             
             Not sure where to start? No problem, check out this [video guide](https://youtu.be/12pDBWdR3I4?si=U_OoBCgNRH3rxyK-).
         ''')
-        
+
+    credit()
+
 elif page == "Weather":
     # ------------------------ Weather Monitor ------------------------
     def get_coordinates_from_city(city_name):
@@ -438,6 +451,8 @@ elif page == "Weather":
 
                 else:
                     st.write("Error: Could not retrieve forecast data.")
+
+    credit()
 
 elif page == "Store":
     # ------------------------ Nearby Running Stores ------------------------
@@ -522,3 +537,6 @@ elif page == "Store":
                 st.write("No running stores found nearby.")
         else:
             st.write("Could not find the location. Please enter a valid city and state name.")
+    
+
+    credit()
