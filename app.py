@@ -9,6 +9,7 @@ from pymeteosource.types import tiers, sections, langs, units
 from geopy.geocoders import Nominatim
 import folium
 from folium.plugins import MarkerCluster
+from tooltip import add_tooltip_css, get_exercise_tooltips, render_with_tooltip
 
 def credit():
     footer_html = """<div style='text-align: center;'>
@@ -20,11 +21,17 @@ st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Coach", "About", "Stretches", "Weather", "Store"])
 
 if page == "Coach":
+    # inject CSS for tooltips
+    add_tooltip_css()
+    # get tooltips dictionary
+    tooltips = get_exercise_tooltips()
+
     # ------------------------ Training Plan Generator Functions ------------------------
     def generate_generic_plan(current_long_run, weeks_to_race, easy_run_variants, speedwork_variants, cross_training_variants, race_distance, preferred_days, goal):
         """
         Generates a training plan based on current long run distance, number of weeks to race, and other training parameters.
         """
+        
         plan = []
         long_run_distance = current_long_run
         build_peak_distance = race_distances[goal] - 1  # Peak distance is race distance minus 1 mile
@@ -244,13 +251,21 @@ if page == "Coach":
                 # Convert the plan into a Pandas DataFrame
                 plan_df = pd.DataFrame(plan)
 
-                # Display the plan
+                # Display the plan with no tool tip
+                # for week in plan:
+                #     st.subheader(f"Week {week['Week']}")
+                #     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                #     for day in days_of_week:
+                #         if day in week:
+                #             st.text(f"{day}: {week[day]}")
+                
+                # Display the plan with tool tip
                 for week in plan:
                     st.subheader(f"Week {week['Week']}")
                     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
                     for day in days_of_week:
                         if day in week:
-                            st.text(f"{day}: {week[day]}")
+                            render_with_tooltip(day, week[day], tooltips)
 
                 # Allow users to download the training plan as a CSV file
                 csv = plan_df.to_csv(index=False).encode("utf-8")
