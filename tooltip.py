@@ -18,7 +18,7 @@ def add_tooltip_css():
         position: relative;
         display: inline-block;
         /* cursor: help; /* subtle hint that it's hoverable */
-        color: inherit; /* keep the default text color */
+        color: inherit; /*  inherit = to keep the default text color */
         font-weight: normal;
         text-decoration: none;
     }
@@ -26,7 +26,7 @@ def add_tooltip_css():
     .tooltip .tooltiptext {
         visibility: hidden;
         width: 300px;
-        background-color: #333;
+        background-color: rgba(51, 51, 51, 0.85); /* semi-transparent black */
         color: #fff;
         text-align: left;
         border-radius: 6px;
