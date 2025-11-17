@@ -11,6 +11,7 @@ Kochi (코치) is a Korean term derived from the English word "coach." This [app
 - **App Instructions & Variants:** Detailed explanation of how to use the app and descriptions of different types of runs and cross-training workouts.
 
 ### App - How To Use
+You can watch the tutorial [here](https://youtu.be/jS0ZHOoTamk?si=Rr3j9Hi4_V7mzIN-)
 1. **Go to the "Coach" page.**
 2. **Select your race goal:** Choose the race distance you are training for (5K, 10K, Half Marathon, or Marathon).
 3. **Input your current long run:** Enter the longest distance you have run recently.
@@ -97,3 +98,4 @@ Kochi (코치) is a Korean term derived from the English word "coach." This [app
 ---
 
 Happy running and good luck with your training! 🏃‍♂️🏃‍♀️
+
